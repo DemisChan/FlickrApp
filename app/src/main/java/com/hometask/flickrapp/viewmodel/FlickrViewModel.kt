@@ -1,4 +1,4 @@
-package com.hometask.flickrapp.ViewModel
+package com.hometask.flickrapp.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -26,7 +26,7 @@ class FlickrViewModel : ViewModel() {
 
                         if (response.isSuccessful) {
                             _uiState.value = FlickrUiState(
-                                photos = response.body()?.photos?.photo ?: emptyList()
+                                photos = response.body()?.photo ?: emptyList()
                             )
                         } else {
                             // Handle error
@@ -46,18 +46,6 @@ class FlickrViewModel : ViewModel() {
 
         }
 
-        fun getPhotos() {
-            viewModelScope.launch {
-                val response = repository.getPhotosWithTags()
-                try {
-                    Log.d("ViewModel", "getPhotos: ${response.body()}")
-
-                } catch (e: Exception) {
-                    e.message
-
-                }
-            }
-        }
-
     }
+}
 

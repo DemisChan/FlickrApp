@@ -13,7 +13,7 @@ interface NetworkService {
         @Query("api_key") apiKey: String,
         @Query("format") format: String,
         @Query("nojsoncallback") noJsonCallback: Int,
-    ): Response<FlickerModelDto>
+    ): Response<FlickrModelDto>
 
     @GET("services/rest/")
     suspend fun getResponse(
@@ -22,7 +22,7 @@ interface NetworkService {
         @Query("tags") tags: String,
         @Query("format") format: String,
         @Query("nojsoncallback") noJsonCallback: Int,
-    ): Response<FlickerModelDto>
+    ): Response<FlickrModelDto>
 }
 
 // add okhttp interceptor

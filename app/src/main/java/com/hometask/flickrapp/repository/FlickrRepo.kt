@@ -15,7 +15,7 @@ class FlickrRepo {
 
     suspend fun getListPhotos() = flickrApi.getResponse("flickr.interestingness.getList","501814c32f4dbaa6ae6c8b571063b6ee", "json", 1)
 
-    suspend fun getPhotos() = flickrApi.getResponse("flickr.photos.search","501814c32f4dbaa6ae6c8b571063b6ee", "json", 1)
+    suspend fun getPhotos() = flickrApi.getResponse("flickr.photos.recent","501814c32f4dbaa6ae6c8b571063b6ee", "json", 1)
 
     suspend fun getPhotosWithTags() = flickrApi.getResponse("flickr.photos.search","501814c32f4dbaa6ae6c8b571063b6ee","YBS", "json", 1)
 }

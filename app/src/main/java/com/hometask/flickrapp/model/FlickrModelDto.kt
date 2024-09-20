@@ -3,7 +3,7 @@ package com.hometask.flickrapp.model
 
 import com.google.gson.annotations.SerializedName
 
-data class Photos(
+data class FlickrModelDto(
     @SerializedName("page")
     val page: Int,
     @SerializedName("pages")
