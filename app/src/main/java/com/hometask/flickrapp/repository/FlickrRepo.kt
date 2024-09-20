@@ -13,5 +13,5 @@ class FlickrRepo {
 
     val flickrApi = retrofit.create(NetworkService::class.java)
 
-    suspend fun getPhotos() = flickrApi.getListPhotos("501814c32f4dbaa6ae6c8b571063b6ee", "json", 1)
+    suspend fun getPhotos() = flickrApi.getListPhotos("flickr.interestingness.getList","501814c32f4dbaa6ae6c8b571063b6ee", "json", 1)
 }

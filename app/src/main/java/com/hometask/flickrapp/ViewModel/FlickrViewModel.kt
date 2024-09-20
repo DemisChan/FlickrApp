@@ -16,7 +16,7 @@ class FlickrViewModel: ViewModel() {
                 Log.d("ViewModel", "getPhotos: ${response.body()}")
 
             } catch (e: Exception) {
-                Log.d("ViewModel", "error: ${e.message}")
+                e.message
 
             }
         }
