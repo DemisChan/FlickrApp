@@ -12,17 +12,8 @@ interface NetworkService {
         @Query("method") method: String,
         @Query("api_key") apiKey: String,
         @Query("format") format: String,
+        @Query("tags") tags: String?,
+        @Query("safe_search") safeSearch: Int?,
         @Query("nojsoncallback") noJsonCallback: Int,
-    ): Response<FlickrModelDto>
-
-    @GET("services/rest/")
-    suspend fun getResponse(
-        @Query("method") method: String,
-        @Query("api_key") apiKey: String,
-        @Query("tags") tags: String,
-        @Query("format") format: String,
-        @Query("nojsoncallback") noJsonCallback: Int,
-    ): Response<FlickrModelDto>
+    ): Response<MainPhotoDto>
 }
-
-// add okhttp interceptor

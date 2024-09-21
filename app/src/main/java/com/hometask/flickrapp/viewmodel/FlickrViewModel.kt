@@ -9,6 +9,7 @@ import com.hometask.flickrapp.repository.FlickrRepo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class FlickrViewModel : ViewModel() {
@@ -20,32 +21,40 @@ class FlickrViewModel : ViewModel() {
     fun onEvent(event: FlickrStateEvents) {
         when (event) {
             is FlickrStateEvents.InitEvent -> {
-                viewModelScope.launch {
-                    try {
-                        val response = repository.getPhotos()
-
-                        if (response.isSuccessful) {
-                            _uiState.value = FlickrUiState(
-                                photos = response.body()?.photo ?: emptyList()
-                            )
-                        } else {
-                            // Handle error
-                            Log.e(
-                                "FlickrViewModel",
-                                "Error fetching photos: ${response.errorBody()}"
-                            )
-                            // Update uiState with error state if necessary
-                        }
-                    } catch (e: Exception) {
-                        // Handle exception
-                        Log.e("FlickrViewModel", "Exception fetching photos", e)
-                        // Update uiState with error state if necessary
-                    }
-                }
+                getPhotos()
             }
 
         }
 
+    }
+
+    private fun getPhotos() {
+        viewModelScope.launch {
+            try {
+                val response = repository.getPhotos()
+
+                if (response.isSuccessful) {
+                    Log.d("FlickrViewModel", "Response: ${response.body()}")
+                    _uiState.update {
+                        it.copy(
+                            photos = response.body()?.photos?.photo ?: emptyList()
+                        )
+                    }
+
+                } else {
+                    // Handle error
+                    Log.e(
+                        "FlickrViewModel",
+                        "Error fetching photos: ${response.errorBody()}"
+                    )
+                    // Update uiState with error state if necessary
+                }
+            } catch (e: Exception) {
+                // Handle exception
+                Log.e("FlickrViewModel", "Exception fetching photos", e)
+                // Update uiState with error state if necessary
+            }
+        }
     }
 }
 

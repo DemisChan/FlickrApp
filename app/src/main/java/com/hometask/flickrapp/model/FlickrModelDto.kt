@@ -3,6 +3,11 @@ package com.hometask.flickrapp.model
 
 import com.google.gson.annotations.SerializedName
 
+data class MainPhotoDto(
+    @SerializedName("photos")
+    val photos: FlickrModelDto,
+)
+
 data class FlickrModelDto(
     @SerializedName("page")
     val page: Int,
