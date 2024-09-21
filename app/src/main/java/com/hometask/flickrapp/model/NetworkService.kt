@@ -14,6 +14,7 @@ interface NetworkService {
         @Query("format") format: String,
         @Query("tags") tags: String?,
         @Query("safe_search") safeSearch: Int?,
+        @Query("extras") extras: String?,
         @Query("nojsoncallback") noJsonCallback: Int,
     ): Response<MainPhotoDto>
 }
