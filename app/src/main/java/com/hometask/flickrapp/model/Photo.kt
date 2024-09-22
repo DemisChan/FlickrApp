@@ -26,6 +26,15 @@ data class Photo(
     val iconfarm: Int,
     @SerializedName("ownername")
     val ownername: String,
+    @SerializedName("datetaken")
+    val datetaken: String,
+    @SerializedName("description")
+    val description: Description,
     @SerializedName("title")
     val title: String
+)
+
+data class Description(
+        @SerializedName("_content")
+    val content: String
 )

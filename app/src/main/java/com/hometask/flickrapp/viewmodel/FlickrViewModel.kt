@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hometask.flickrapp.domain.FlickrStateEvents
 import com.hometask.flickrapp.domain.FlickrUiState
+import com.hometask.flickrapp.model.Photo
 import com.hometask.flickrapp.repository.FlickrRepo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,6 +23,9 @@ class FlickrViewModel : ViewModel() {
         when (event) {
             is FlickrStateEvents.InitEvent -> {
                 getPhotos()
+            }
+            is FlickrStateEvents.PhotoClickedEvent -> {
+                handlePhotoClick(event.photo)
             }
 
         }
@@ -52,9 +56,16 @@ class FlickrViewModel : ViewModel() {
             } catch (e: Exception) {
                 // Handle exception
                 Log.e("FlickrViewModel", "Exception fetching photos", e)
+                e.message
                 // Update uiState with error state if necessary
+
             }
         }
+    }
+    private fun handlePhotoClick(photo: Photo) {
+        // Handle the photo click event
+        Log.d("FlickrViewModel", "Photo clicked: $photo")
+        // You can add more logic here as needed
     }
 }
 
