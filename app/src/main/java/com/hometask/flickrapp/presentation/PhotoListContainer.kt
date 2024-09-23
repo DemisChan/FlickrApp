@@ -63,7 +63,7 @@ fun PhotoListContainer(
             val photo = uiState.value.photos.find { it.id == photoId }
             photo?.let {
                 Log.d("PhotoListContainer", "Displaying details for photo: $photo")
-                PhotoDetailScreen(photo = it)
+                PhotoDetailScreen(photo = it, modifier = modifier)
             }
         }
     }

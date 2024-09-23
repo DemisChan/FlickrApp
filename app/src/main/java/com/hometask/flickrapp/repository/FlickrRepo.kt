@@ -53,7 +53,7 @@ class FlickrRepo {
         tags = "Yorkshire",
         format = "json",
         safeSearch = 1,
-        extras = "icon_server,owner_name,description,datetaken",
+        extras = "icon_server,owner_name,description,date_taken",
         noJsonCallback = 1
     )
 }
