@@ -6,4 +6,5 @@ sealed class FlickrStateEvents {
     // respects class hierarchy
     data object InitEvent : FlickrStateEvents()
     data class PhotoClickedEvent(val photo: Photo) : FlickrStateEvents()
+    data class LoadUserPhotosEvent(val userId: String) : FlickrStateEvents()
 }

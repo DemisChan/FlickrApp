@@ -13,7 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import com.hometask.flickrapp.presentation.PhotoListContainer
+import com.hometask.flickrapp.presentation.ScreenContainer
 import com.hometask.flickrapp.ui.theme.FlickrAppTheme
 import com.hometask.flickrapp.viewmodel.FlickrViewModel
 
@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 ) { innerPadding ->
-                    PhotoListContainer(viewModel, modifier = Modifier.padding(innerPadding))
+                    ScreenContainer(viewModel, modifier = Modifier.padding(innerPadding))
                 }
             }
         }

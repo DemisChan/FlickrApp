@@ -27,13 +27,14 @@ class FlickrRepo {
 
     val flickrApi = retrofit.create(NetworkService::class.java)
 
-    suspend fun getListPhotos() = flickrApi.getResponse(
-        method = "flickr.interestingness.getList",
+    suspend fun getPhotosByUser(userId: String) = flickrApi.getResponse(
+        method = "flickr.photos.search",
         apiKey = "501814c32f4dbaa6ae6c8b571063b6ee",
-        format = "json",
         tags = null,
-        safeSearch = null,
-        extras = null,
+        userId = userId,
+        format = "json",
+        safeSearch = 1,
+        extras = "icon_server,owner_name,description,date_taken",
         noJsonCallback = 1
     )
 
@@ -42,6 +43,7 @@ class FlickrRepo {
         apiKey = "501814c32f4dbaa6ae6c8b571063b6ee",
         format = "json",
         tags = null,
+        userId = null,
         safeSearch = null,
         extras = null,
         noJsonCallback = 1
@@ -52,6 +54,7 @@ class FlickrRepo {
         apiKey = "501814c32f4dbaa6ae6c8b571063b6ee",
         tags = "Yorkshire",
         format = "json",
+        userId = null,
         safeSearch = 1,
         extras = "icon_server,owner_name,description,date_taken",
         noJsonCallback = 1

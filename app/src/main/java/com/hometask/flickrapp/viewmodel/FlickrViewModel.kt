@@ -24,13 +24,18 @@ class FlickrViewModel : ViewModel() {
             is FlickrStateEvents.InitEvent -> {
                 getPhotos()
             }
+
             is FlickrStateEvents.PhotoClickedEvent -> {
                 handlePhotoClick(event.photo)
             }
 
-        }
+            is FlickrStateEvents.LoadUserPhotosEvent -> {
+                getUserPhotos(event)
 
+            }
+        }
     }
+
 
     private fun getPhotos() {
         viewModelScope.launch {
@@ -46,26 +51,50 @@ class FlickrViewModel : ViewModel() {
                     }
 
                 } else {
-                    // Handle error
                     Log.e(
                         "FlickrViewModel",
                         "Error fetching photos: ${response.errorBody()}"
                     )
-                    // Update uiState with error state if necessary
                 }
             } catch (e: Exception) {
-                // Handle exception
                 Log.e("FlickrViewModel", "Exception fetching photos", e)
                 e.message
-                // Update uiState with error state if necessary
-
             }
         }
     }
+
+    fun getUserPhotos(event: FlickrStateEvents.LoadUserPhotosEvent) {
+        viewModelScope.launch {
+            try {
+                val response = repository.getPhotosByUser(event.userId)
+
+                if (response.isSuccessful) {
+                    Log.d("FlickrViewModel", "Response: ${response.body()}")
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            userPhotos = response.body()?.photos?.photo ?: emptyList()
+                        )
+                    }
+                } else {
+                    Log.e(
+                        "FlickrViewModel",
+                        "Error fetching photos: ${response.errorBody()}"
+                    )
+                }
+            } catch (e: Exception) {
+                Log.e("FlickrViewModel", "Exception fetching photos", e)
+                e.message
+            }
+        }
+    }
+
     private fun handlePhotoClick(photo: Photo) {
-        // Handle the photo click event
-        Log.d("FlickrViewModel", "Photo clicked: $photo")
-        // You can add more logic here as needed
+        _uiState.update {
+            it.copy(
+                selectedPhoto = photo
+            )
+        }
     }
 }
+
 

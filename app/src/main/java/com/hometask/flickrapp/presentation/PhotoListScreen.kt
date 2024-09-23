@@ -1,6 +1,5 @@
 package com.hometask.flickrapp.presentation
 
-import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -24,9 +23,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.hometask.flickrapp.domain.FlickrStateEvents
 import com.hometask.flickrapp.domain.FlickrUiState
@@ -35,63 +31,61 @@ import com.hometask.flickrapp.viewmodel.FlickrViewModel
 
 
 @Composable
-fun PhotoListContainer(
+fun PhotoListScreenContainer(
     viewModel: FlickrViewModel,
     modifier: Modifier = Modifier,
+    onNavigate: (String) -> Unit = {},
 ) {
-
-    val navController = rememberNavController()
-    val uiState = viewModel.uiState.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.onEvent(FlickrStateEvents.InitEvent)
     }
-
-    NavHost(navController = navController, startDestination = "photoList") {
-        composable("photoList") {
-            PhotoListScreen(
-                modifier = modifier,
-                state = uiState.value,
-                onStateEvent = viewModel::onEvent,
-                onPhotoClick = { photo ->
-                    Log.d("PhotoListContainer", "Navigating to photoDetail/${photo.id}")
-                    navController.navigate("photoDetail/${photo.id}")
-                }
-            )
+    val uiState = viewModel.uiState.collectAsState()
+    PhotoListScreen(
+        modifier = modifier,
+        onStateEvent = { event -> viewModel.onEvent(event) },
+        state = uiState.value,
+        // this should be in handleCLick in viewmodel
+        onPhotoClick = { photo ->
+            viewModel.onEvent(FlickrStateEvents.PhotoClickedEvent(photo))
+            onNavigate("photoDetail/${photo.id}")
+        },
+        onUserClick = { userId ->
+            onNavigate("userPhotos/$userId")
         }
-        composable("photoDetail/{photoId}") { backStackEntry ->
-            val photoId = backStackEntry.arguments?.getString("photoId")
-            val photo = uiState.value.photos.find { it.id == photoId }
-            photo?.let {
-                Log.d("PhotoListContainer", "Displaying details for photo: $photo")
-                PhotoDetailScreen(photo = it, modifier = modifier)
-            }
-        }
-    }
+    )
 }
+
 
 @Composable
 fun PhotoListScreen(
-    modifier: Modifier = Modifier,
     state: FlickrUiState = FlickrUiState(),
+    modifier: Modifier = Modifier,
     onStateEvent: (FlickrStateEvents) -> Unit,
-    onPhotoClick: (Photo) -> Unit = { photo -> onStateEvent(FlickrStateEvents.PhotoClickedEvent(photo)) }
+    onPhotoClick: (Photo) -> Unit,
+    onUserClick: (String) -> Unit,
 ) {
-    // Display photos from uiState.photos
     val photos = state.photos
-    Log.d("PhotoListScreen", "Photos: $photos")
+
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = modifier.padding(16.dp),
     ) {
         items(photos.size) {
-            PhotoItem(photo = photos[it], onPhotoClick = onPhotoClick)
+            PhotoItem(
+                photo = photos[it],
+                onPhotoClick = onPhotoClick,
+                onUserClick = onUserClick
+            )
         }
-
     }
 }
 
 @Composable
-fun PhotoItem(photo: Photo, onPhotoClick: (Photo) -> Unit) {
+fun PhotoItem(
+    photo: Photo,
+    onPhotoClick: (Photo) -> Unit,
+    onUserClick: (String) -> Unit = { },
+) {
     Column(
         modifier = Modifier
             .padding(8.dp)
@@ -99,7 +93,8 @@ fun PhotoItem(photo: Photo, onPhotoClick: (Photo) -> Unit) {
             .padding(8.dp)
     ) {
         Row(
-            modifier = Modifier.padding(bottom = 8.dp),
+            modifier = Modifier
+                .padding(bottom = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
@@ -111,7 +106,14 @@ fun PhotoItem(photo: Photo, onPhotoClick: (Photo) -> Unit) {
                     .border(1.dp, Color.Gray, CircleShape)
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text = photo.ownername, style = MaterialTheme.typography.bodyMedium)
+            Text(
+                text = photo.ownername,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier
+                    .clickable {
+                        onUserClick(photo.owner)
+                    }
+            )
         }
 
         AsyncImage(
@@ -121,7 +123,6 @@ fun PhotoItem(photo: Photo, onPhotoClick: (Photo) -> Unit) {
                 .border(2.dp, Color.Gray)
                 .padding(4.dp)
                 .clickable {
-                    Log.d("PhotoItem", "Photo clicked: ${photo.id}")
                     onPhotoClick(photo)
                 },
             contentScale = ContentScale.Crop,

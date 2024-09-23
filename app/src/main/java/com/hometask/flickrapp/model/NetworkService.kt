@@ -11,6 +11,7 @@ interface NetworkService {
     suspend fun getResponse(
         @Query("method") method: String,
         @Query("api_key") apiKey: String,
+        @Query("user_id") userId: String?,
         @Query("format") format: String,
         @Query("tags") tags: String?,
         @Query("safe_search") safeSearch: Int?,

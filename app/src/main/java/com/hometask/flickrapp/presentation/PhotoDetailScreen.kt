@@ -13,6 +13,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -21,17 +22,37 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.text.HtmlCompat
 import coil.compose.AsyncImage
-import com.hometask.flickrapp.model.Description
+import com.hometask.flickrapp.domain.FlickrStateEvents
+import com.hometask.flickrapp.domain.FlickrUiState
 import com.hometask.flickrapp.model.Photo
+import com.hometask.flickrapp.viewmodel.FlickrViewModel
 
 
 @Composable
-fun PhotoDetailScreen(photo: Photo, modifier: Modifier = Modifier) {
+fun PhotoDetailScreenContainer(
+    viewModel: FlickrViewModel,
+    modifier: Modifier = Modifier
+) {
+    val uiState = viewModel.uiState.collectAsState()
+    PhotoDetailScreen(
+        modifier = modifier,
+        onStateEvent = { event -> viewModel.onEvent(event) },
+        state = uiState.value
+    )
+}
+
+@Composable
+fun PhotoDetailScreen(
+    state: FlickrUiState = FlickrUiState(),
+    modifier: Modifier = Modifier,
+    onStateEvent: (FlickrStateEvents) -> Unit,
+) {
+    val photo = state.selectedPhoto ?: return
+
     Column(
         modifier = modifier
             .padding(16.dp)
@@ -57,11 +78,6 @@ fun PhotoDetailScreen(photo: Photo, modifier: Modifier = Modifier) {
             style = MaterialTheme.typography.bodyLarge
         )
         Spacer(modifier = Modifier.height(8.dp))
-//        AnnotatedText(
-//            description = photo.description.content,
-//            title = "Description",
-//            style = MaterialTheme.typography.bodyLarge
-//        )
         HandleDescription(photo)
 
     }
@@ -111,27 +127,4 @@ fun HtmlText(html: String, modifier: Modifier = Modifier) {
         factory = { context -> TextView(context) },
         update = { it.text = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT) }
     )
-}
-
-
-@Preview
-@Composable
-fun PhotoDetailScreenPreview() {
-    val photo = Photo(
-        id = "123",
-        farm = 1,
-        isfamily = 0,
-        isfriend = 0,
-        ispublic = 1,
-        owner = "Demis",
-        secret = "abc123",
-        server = "4567",
-        iconserver = "1234",
-        iconfarm = 1,
-        ownername = "John Doe",
-        datetaken = "2023-01-01",
-        description = Description(content = "This is a sample description."),
-        title = "Sample Photo"
-    )
-    PhotoDetailScreen(photo = photo)
 }
