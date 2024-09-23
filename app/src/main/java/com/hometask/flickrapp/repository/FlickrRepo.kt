@@ -38,17 +38,6 @@ class FlickrRepo {
         noJsonCallback = 1
     )
 
-    suspend fun getPhotos() = flickrApi.getResponse(
-        method = "flickr.photos.getRecent",
-        apiKey = "501814c32f4dbaa6ae6c8b571063b6ee",
-        format = "json",
-        tags = null,
-        userId = null,
-        safeSearch = null,
-        extras = null,
-        noJsonCallback = 1
-    )
-
     suspend fun getPhotosWithTags() = flickrApi.getResponse(
         method = "flickr.photos.search",
         apiKey = "501814c32f4dbaa6ae6c8b571063b6ee",

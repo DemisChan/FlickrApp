@@ -96,5 +96,3 @@ class FlickrViewModel : ViewModel() {
         }
     }
 }
-
-
