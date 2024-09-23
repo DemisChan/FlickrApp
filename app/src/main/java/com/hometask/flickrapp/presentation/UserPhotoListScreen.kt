@@ -27,6 +27,7 @@ fun UserPhotoListScreenContainer(
     val uiState = viewModel.uiState.collectAsState()
 
     UserPhotoListScreen(
+        modifier = modifier,
         onStateEvent = { event -> viewModel.onEvent(event) },
         onPhotoClick = { photo ->
             viewModel.onEvent(FlickrStateEvents.PhotoClickedEvent(photo))

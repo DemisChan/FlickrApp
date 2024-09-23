@@ -36,7 +36,6 @@ class FlickrViewModel : ViewModel() {
         }
     }
 
-
     private fun getPhotos() {
         viewModelScope.launch {
             try {
@@ -63,7 +62,7 @@ class FlickrViewModel : ViewModel() {
         }
     }
 
-    fun getUserPhotos(event: FlickrStateEvents.LoadUserPhotosEvent) {
+    private fun getUserPhotos(event: FlickrStateEvents.LoadUserPhotosEvent) {
         viewModelScope.launch {
             try {
                 val response = repository.getPhotosByUser(event.userId)
