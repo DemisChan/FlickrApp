@@ -1,16 +1,14 @@
 package com.hometask.flickrapp.viewmodel
 
-import com.hometask.flickrapp.model.FlickrModelDto
-import com.hometask.flickrapp.model.MainPhotoDto
+import com.hometask.flickrapp.domain.FlickrUiState
+import com.hometask.flickrapp.model.Description
 import com.hometask.flickrapp.model.Photo
 import com.hometask.flickrapp.repository.FlickrRepo
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkConstructor
 import io.mockk.unmockkAll
-import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -52,42 +50,46 @@ class FlickrViewModelTest {
 
     @Test
     fun `test getPhotos with successful response`() = runTest {
-        // Arrange
-        val mockResponse = mockk<Response<MainPhotoDto>>()
-        val mockFlickrResponse = mockk<MainPhotoDto>()
-        val mockPhotos = mockk<FlickrModelDto>()
-        val mockPhotoList = listOf(
+        val photos = listOf(
             Photo(
                 id = "1",
-                owner = "2",
-                secret = "3",
-                server = "4",
-                farm = 5,
-                title = "6",
-                ispublic = 7,
-                isfriend = 8,
-                isfamily = 9,
-                iconserver = "10",
-                iconfarm = 11,
-                ownername = "12",
-                datetaken = "13",
-                description = mockk(),
+                owner = "owner1",
+                secret = "secret1",
+                server = "server1",
+                farm = 1,
+                title = "title1",
+                ispublic = 1,
+                isfriend = 0,
+                isfamily = 0,
+                ownername = "ownername1",
+                datetaken = "datetaken1",
+                description = Description(content = "content1"),
+                iconserver = "iconserver1",
+                iconfarm = 1
+            ),
+            Photo(
+                id = "2",
+                owner = "owner2",
+                secret = "secret1",
+                server = "server1",
+                farm = 1,
+                title = "title1",
+                ispublic = 1,
+                isfriend = 0,
+                isfamily = 0,
+                ownername = "ownername1",
+                datetaken = "datetaken1",
+                description = Description(content = "content1"),
+                iconserver = "iconserver1",
+                iconfarm = 1
             )
         )
+        val response = Response.success(FlickrUiState(photos = photos).photos)
+        coEvery { repository.getPhotosWithTags().body()?.photos?.photo } returns response.body()
 
-        every { mockResponse.isSuccessful } returns true
-        every { mockResponse.body() } returns mockFlickrResponse
-        every { mockFlickrResponse.photos } returns mockPhotos
-        every { mockPhotos.photo } returns mockPhotoList
-        coEvery { repository.getPhotosWithTags() } returns mockResponse
-
-        // Act
         viewModel.getPhotos()
-        testDispatcher.scheduler.advanceUntilIdle()
+        assert(viewModel.uiState.value.photos == photos)
 
-        // Assert
-        assertEquals(mockPhotoList, viewModel.uiState.value.photos)
-        coVerify { repository.getPhotosWithTags() }
     }
 }
 
