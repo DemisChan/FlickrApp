@@ -36,7 +36,7 @@ class FlickrViewModel : ViewModel() {
         }
     }
 
-    private fun getPhotos() {
+    fun getPhotos() {
         viewModelScope.launch {
             try {
                 val response = repository.getPhotosWithTags()
